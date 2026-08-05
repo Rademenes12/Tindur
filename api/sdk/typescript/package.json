@@ -1,0 +1,30 @@
+{
+  "name": "@tindur/sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for Tindur Partner API (B2B booking)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "tindur",
+    "sdk",
+    "booking",
+    "b2b"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/node-fetch": "^2.6.11",
+    "typescript": "^5.0.0"
+  }
+}

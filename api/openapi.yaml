@@ -1,0 +1,696 @@
+openapi: 3.1.0
+info:
+  title: Tindur Partner API
+  description: |
+    B2B API for tour operators to manage experiences, schedules, bookings, and payments.
+    
+    **Authentication:**
+    All requests must include a Bearer token in the `Authorization` header.
+    - Production: `tk_live_xxx`
+    - Test: `tk_test_xxx`
+    
+    **Rate Limiting:**
+    - Free Tier: 100 requests/minute
+    - Pro Tier: 1000 requests/minute
+    
+    Headers:
+    - `X-RateLimit-Limit`: Maximum allowed requests in the current window.
+    - `X-RateLimit-Remaining`: Remaining requests in the current window.
+    - `X-RateLimit-Reset`: Seconds until the limit resets.
+
+  version: 1.0.0
+  contact:
+    name: Tindur Support
+    email: contact@tindur.is
+    url: https://tindur.is
+
+servers:
+  - url: https://api.tindur.is/v1
+    description: Production server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Icelandic Adventures"
+        slug:
+          type: string
+          example: "icelandic-adventures"
+        logo_url:
+          type: string
+          format: uri
+        default_locale:
+          type: string
+          example: "en"
+        default_currency:
+          type: string
+          example: "ISK"
+        timezone:
+          type: string
+          example: "Atlantic/Reykjavik"
+        stripe_connected:
+          type: boolean
+
+    Experience:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title_i18n:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: "Golden Circle Tour"
+            is: "Gullni hringurinn"
+        description_i18n:
+          type: object
+          additionalProperties:
+            type: string
+        category:
+          type: string
+          example: "Sightseeing"
+        price_cents:
+          type: integer
+          example: 1500000
+        currency:
+          type: string
+          example: "ISK"
+        duration_minutes:
+          type: integer
+          example: 360
+        max_participants:
+          type: integer
+          example: 12
+        difficulty:
+          type: string
+          enum: [easy, moderate, hard]
+        location:
+          type: string
+          example: "Thingvellir National Park"
+        included:
+          type: array
+          items:
+            type: string
+        not_included:
+          type: array
+          items:
+            type: string
+        cancellation_policy:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        status:
+          type: string
+          enum: [draft, active, archived]
+
+    ExperienceCreate:
+      type: object
+      required:
+        - title_i18n
+        - price_cents
+        - currency
+      properties:
+        title_i18n:
+          type: object
+          additionalProperties:
+            type: string
+        description_i18n:
+          type: object
+          additionalProperties:
+            type: string
+        category:
+          type: string
+        price_cents:
+          type: integer
+        currency:
+          type: string
+        duration_minutes:
+          type: integer
+        max_participants:
+          type: integer
+        difficulty:
+          type: string
+          enum: [easy, moderate, hard]
+        location:
+          type: string
+        included:
+          type: array
+          items:
+            type: string
+        not_included:
+          type: array
+          items:
+            type: string
+        cancellation_policy:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        experience_id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        available_slots:
+          type: integer
+        blocked:
+          type: boolean
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        experience_id:
+          type: string
+          format: uuid
+        schedule_id:
+          type: string
+          format: uuid
+        customer:
+          $ref: '#/components/schemas/Customer'
+        participants:
+          type: integer
+        total_cents:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, completed]
+        special_requests:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    BookingCreate:
+      type: object
+      required:
+        - experience_id
+        - schedule_id
+        - customer
+        - participants
+      properties:
+        experience_id:
+          type: string
+          format: uuid
+        schedule_id:
+          type: string
+          format: uuid
+        customer:
+          $ref: '#/components/schemas/Customer'
+        participants:
+          type: integer
+        special_requests:
+          type: string
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        booking_id:
+          type: string
+          format: uuid
+        amount_cents:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, succeeded, failed, refunded]
+        commission_cents:
+          type: integer
+        payout_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    Customer:
+      type: object
+      required:
+        - email
+        - full_name
+      properties:
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        phone:
+          type: string
+
+    ApiKey:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        expires_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties:
+                type: string
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource state conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+security:
+  - BearerAuth: []
+
+paths:
+  /organizations/me:
+    get:
+      summary: Get current organization
+      tags: [Organization]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      summary: Update current organization
+      tags: [Organization]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                logo_url: { type: string, format: uri }
+                default_locale: { type: string }
+                default_currency: { type: string }
+                timezone: { type: string }
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /experiences:
+    get:
+      summary: List experiences
+      tags: [Experiences]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [draft, active, archived] }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: per_page
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: A list of experiences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Experience'
+    post:
+      summary: Create a new experience
+      tags: [Experiences]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /experiences/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get experience details
+      tags: [Experiences]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update experience
+      tags: [Experiences]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceCreate'
+      responses:
+        '200':
+          description: Updated
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Archive experience
+      tags: [Experiences]
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /schedules:
+    get:
+      summary: List schedules
+      tags: [Schedules]
+      parameters:
+        - name: experience_id
+          in: query
+          schema: { type: string, format: uuid }
+        - name: date_from
+          in: query
+          schema: { type: string, format: date }
+        - name: date_to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+
+  /schedules/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    patch:
+      summary: Update availability
+      tags: [Schedules]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                available_slots: { type: integer }
+                blocked: { type: boolean }
+      responses:
+        '200':
+          description: Updated
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /bookings:
+    get:
+      summary: List bookings
+      tags: [Bookings]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, confirmed, cancelled, completed] }
+        - name: experience_id
+          in: query
+          schema: { type: string, format: uuid }
+        - name: date_from
+          in: query
+          schema: { type:string, format: date }
+        - name: date_to
+          in: query
+          schema: { type:string, format: date }
+        - name: customer_email
+          in: query
+          schema: { type: string, format: email }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  /bookings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get booking details
+      tags: [Bookings]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Cancel booking
+      tags: [Bookings]
+      responses:
+        '204':
+          description: Cancelled successfully
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /payments:
+    get:
+      summary: List payments
+      tags: [Payments]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, succeeded, failed, refunded] }
+        - name: date_from
+          in: query
+          schema: { type: string, format: date }
+        - name: date_to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+
+  /payouts:
+    get:
+      summary: List payouts
+      tags: [Payments]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string, format: uuid }
+                    amount_cents: { type: integer }
+                    status: { type: string }
+                    created_at: { type: string, format: date-time }
+
+  /api-keys:
+    get:
+      summary: List API keys
+      tags: [API Keys]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKey'
+    post:
+      summary: Create new API key
+      tags: [API Keys]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string }
+                scopes: { type: array, items: { type: string } }
+                expires_at: { type: string, format: date-time }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+
+  /api-keys/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    delete:
+      summary: Revoke API key
+      tags: [API Keys]
+      responses:
+        '204':
+          description: Revoked
+        '404':
+          $ref: '#/components/responses/NotFound'
