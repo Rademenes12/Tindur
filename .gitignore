@@ -52,3 +52,11 @@ agent_logs/
 *.zip
 *.rar
 *.7z
+
+# Next.js
+www/node_modules/
+www/.next/
+www/out/
+www/build/
+www/dist/
+www/coverage/
