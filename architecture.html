@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tindur Architecture Diagram</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #020617;
+      min-height: 100vh;
+      padding: 2rem;
+      color: white;
+    }
+    .container { max-width: 1300px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot {
+      width: 12px; height: 12px; background: #22d3ee; border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container {
+      background: rgba(15, 23, 42, 0.5); border-radius: 1rem;
+      border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto;
+    }
+    svg { width: 100%; min-width: 1100px; display: block; }
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;
+      border: 1px solid #1e293b; padding: 1.25rem;
+    }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; }
+    .card-dot.emerald { background: #34d399; }
+    .card-dot.violet { background: #a78bfa; }
+    .card-dot.amber { background: #fbbf24; }
+    .card-dot.rose { background: #fb7185; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Tindur · System Architecture</h1>
+      </div>
+      <p class="subtitle">MVP — Booking & Resource Management Platform for Icelandic Tour Operators</p>
+    </div>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1300 900">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+          <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" />
+          </marker>
+          <marker id="arrow-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" />
+          </marker>
+          <marker id="arrow-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa" />
+          </marker>
+          <marker id="arrow-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- ====== LEGEND (top-right) ====== -->
+        <text x="1080" y="40" fill="white" font-size="10" font-weight="600">Legend</text>
+        <rect x="1080" y="50" width="16" height="10" rx="2" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="1102" y="58" fill="#94a3b8" font-size="8">Frontend</text>
+        <rect x="1080" y="66" width="16" height="10" rx="2" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1"/>
+        <text x="1102" y="74" fill="#94a3b8" font-size="8">Backend / API</text>
+        <rect x="1080" y="82" width="16" height="10" rx="2" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="1102" y="90" fill="#94a3b8" font-size="8">Database</text>
+        <rect x="1080" y="98" width="16" height="10" rx="2" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1"/>
+        <text x="1102" y="106" fill="#94a3b8" font-size="8">External Service</text>
+        <rect x="1080" y="114" width="16" height="10" rx="2" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+        <text x="1102" y="122" fill="#94a3b8" font-size="8">Mobile App</text>
+        <line x1="1080" y1="134" x2="1096" y2="134" stroke="#fb7185" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="1102" y="137" fill="#94a3b8" font-size="8">WebSocket</text>
+        <line x1="1080" y1="148" x2="1096" y2="148" stroke="#22d3ee" stroke-width="1"/>
+        <text x="1102" y="151" fill="#94a3b8" font-size="8">HTTPS / REST</text>
+
+        <!-- ====== LAYER 0: USERS (left side) ====== -->
+        <text x="70" y="45" fill="#22d3ee" font-size="8" font-weight="600" filter="url(#glow)">USERS</text>
+
+        <!-- User: Tourist (Widget) -->
+        <rect x="30" y="55" width="130" height="65" rx="8" fill="rgba(30,41,59,0.6)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="95" y="78" fill="white" font-size="11" font-weight="600" text-anchor="middle">👤 Tourist</text>
+        <text x="95" y="95" fill="#94a3b8" font-size="9" text-anchor="middle">Operators Website</text>
+        <text x="95" y="110" fill="#64748b" font-size="8" text-anchor="middle">Booking Widget</text>
+
+        <!-- User: Org Admin (Dashboard) -->
+        <rect x="30" y="140" width="130" height="65" rx="8" fill="rgba(30,41,59,0.6)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="95" y="163" fill="white" font-size="11" font-weight="600" text-anchor="middle">👤 Org Admin</text>
+        <text x="95" y="180" fill="#94a3b8" font-size="9" text-anchor="middle">Web Dashboard</text>
+        <text x="95" y="195" fill="#64748b" font-size="8" text-anchor="middle">Manage Resources</text>
+
+        <!-- User: Guide (Flutter) -->
+        <rect x="30" y="225" width="130" height="65" rx="8" fill="rgba(30,41,59,0.6)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="95" y="248" fill="white" font-size="11" font-weight="600" text-anchor="middle">👤 Guide</text>
+        <text x="95" y="265" fill="#94a3b8" font-size="9" text-anchor="middle">Flutter Mobile App</text>
+        <text x="95" y="280" fill="#64748b" font-size="8" text-anchor="middle">Check-in / Photo</text>
+
+        <!-- User: Super Admin -->
+        <rect x="30" y="310" width="130" height="50" rx="8" fill="rgba(30,41,59,0.6)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="95" y="333" fill="white" font-size="11" font-weight="600" text-anchor="middle">👤 Super Admin</text>
+        <text x="95" y="350" fill="#94a3b8" font-size="9" text-anchor="middle">Tindur Admin Panel</text>
+
+        <!-- ====== ARROWS: Users → Next.js ====== -->
+        <line x1="160" y1="87" x2="210" y2="87" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+        <text x="185" y="82" fill="#94a3b8" font-size="8" text-anchor="middle">HTTPS</text>
+
+        <line x1="160" y1="172" x2="210" y2="172" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+        <text x="185" y="167" fill="#94a3b8" font-size="8" text-anchor="middle">HTTPS</text>
+
+        <!-- Curved: Guide Flutter → Supabase Realtime (direct) -->
+        <path d="M 160 257 Q 200 257 200 320 Q 200 400 350 400" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-rose)"/>
+        <text x="175" y="310" fill="#fb7185" font-size="8">WebSocket (Realtime)</text>
+
+        <line x1="160" y1="335" x2="210" y2="335" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+        <!-- ====== LAYER 1: NEXT.JS (Vercel) ====== -->
+        <text x="380" y="45" fill="#22d3ee" font-size="8" font-weight="600" filter="url(#glow)">VERCEL — NEXT.JS</text>
+
+        <rect x="210" y="55" width="360" height="320" rx="14" fill="rgba(251,191,36,0.04)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="222" y="73" fill="#fbbf24" font-size="9" font-weight="600">Vercel Hosting (Edge + Serverless)</text>
+
+        <!-- Next.js sub-components -->
+        <rect x="230" y="85" width="155" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="307" y="105" fill="white" font-size="11" font-weight="600" text-anchor="middle">Booking Widget</text>
+        <text x="307" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">Embeddable iframe / SDK</text>
+        <text x="307" y="133" fill="#22d3ee" font-size="7" text-anchor="middle">/widget/:org_id</text>
+
+        <rect x="400" y="85" width="155" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="477" y="105" fill="white" font-size="11" font-weight="600" text-anchor="middle">Org Dashboard</text>
+        <text x="477" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">Next.js App Router</text>
+        <text x="477" y="133" fill="#22d3ee" font-size="7" text-anchor="middle">/dashboard/*</text>
+
+        <rect x="230" y="160" width="155" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="307" y="180" fill="white" font-size="11" font-weight="600" text-anchor="middle">Admin Panel</text>
+        <text x="307" y="195" fill="#94a3b8" font-size="9" text-anchor="middle">Superadmin Portal</text>
+        <text x="307" y="208" fill="#22d3ee" font-size="7" text-anchor="middle">/admin/*</text>
+
+        <rect x="400" y="160" width="155" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="477" y="180" fill="white" font-size="11" font-weight="600" text-anchor="middle">API Routes</text>
+        <text x="477" y="195" fill="#94a3b8" font-size="9" text-anchor="middle">Next.js Route Handlers</text>
+        <text x="477" y="208" fill="#22d3ee" font-size="7" text-anchor="middle">/api/* → Supabase</text>
+
+        <rect x="230" y="235" width="325" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="392" y="255" fill="white" font-size="11" font-weight="600" text-anchor="middle">Realtime Subscriptions</text>
+        <text x="392" y="270" fill="#94a3b8" font-size="9" text-anchor="middle">supabase-js · channels · presence</text>
+        <text x="392" y="283" fill="#22d3ee" font-size="7" text-anchor="middle">Live booking updates · guide status</text>
+
+        <rect x="230" y="305" width="325" height="55" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="392" y="325" fill="white" font-size="11" font-weight="600" text-anchor="middle">Stripe Integration Layer</text>
+        <text x="392" y="340" fill="#94a3b8" font-size="9" text-anchor="middle">Checkout Sessions · Webhooks</text>
+        <text x="392" y="353" fill="#22d3ee" font-size="7" text-anchor="middle">ISK payments · PaymentIntents</text>
+
+        <!-- ====== ARROWS: Next.js → Supabase ====== -->
+        <line x1="570" y1="172" x2="630" y2="172" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+        <text x="600" y="167" fill="#94a3b8" font-size="8" text-anchor="middle">@supabase/supabase-js</text>
+
+        <line x1="570" y1="257" x2="630" y2="257" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-rose)"/>
+        <text x="600" y="250" fill="#fb7185" font-size="8" text-anchor="middle">Realtime Channel</text>
+
+        <!-- ====== LAYER 2: SUPABASE ====== -->
+        <text x="810" y="45" fill="#34d399" font-size="8" font-weight="600" filter="url(#glow)">SUPABASE (FRA / Auto-Scale)</text>
+
+        <rect x="630" y="55" width="360" height="365" rx="14" fill="rgba(6,78,59,0.06)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="642" y="73" fill="#34d399" font-size="9" font-weight="600">Supabase Project · PostgreSQL 15</text>
+
+        <!-- Supabase Postgres DB -->
+        <rect x="650" y="85" width="160" height="130" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="730" y="103" fill="white" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL</text>
+        <text x="730" y="118" fill="#94a3b8" font-size="9" text-anchor="middle">Database Schema</text>
+        <text x="730" y="136" fill="#c4b5fd" font-size="8" text-anchor="middle">organizations</text>
+        <text x="730" y="150" fill="#c4b5fd" font-size="8" text-anchor="middle">users</text>
+        <text x="730" y="164" fill="#c4b5fd" font-size="8" text-anchor="middle">resources</text>
+        <text x="730" y="178" fill="#c4b5fd" font-size="8" text-anchor="middle">bookings</text>
+        <text x="730" y="192" fill="#c4b5fd" font-size="8" text-anchor="middle">availability / payments</text>
+
+        <!-- Supabase Auth -->
+        <rect x="825" y="85" width="150" height="55" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="900" y="105" fill="white" font-size="11" font-weight="600" text-anchor="middle">Auth</text>
+        <text x="900" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">GoTrue · JWT · RLS</text>
+        <text x="900" y="133" fill="#fb7185" font-size="7" text-anchor="middle">Email+Password · Magic Link</text>
+
+        <!-- Supabase Storage -->
+        <rect x="825" y="155" width="150" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="900" y="175" fill="white" font-size="11" font-weight="600" text-anchor="middle">Storage</text>
+        <text x="900" y="190" fill="#94a3b8" font-size="9" text-anchor="middle">S3-compatible</text>
+        <text x="900" y="203" fill="#fbbf24" font-size="7" text-anchor="middle">guide-photos · avatars</text>
+
+        <!-- Supabase Realtime -->
+        <rect x="650" y="230" width="160" height="55" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="730" y="250" fill="white" font-size="11" font-weight="600" text-anchor="middle">Realtime</text>
+        <text x="730" y="265" fill="#94a3b8" font-size="9" text-anchor="middle">WebSocket · Broadcast</text>
+        <text x="730" y="278" fill="#fb923c" font-size="7" text-anchor="middle">Booking → Guide push</text>
+
+        <!-- Supabase Edge Functions -->
+        <rect x="825" y="230" width="150" height="55" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="900" y="250" fill="white" font-size="11" font-weight="600" text-anchor="middle">Edge Functions</text>
+        <text x="900" y="265" fill="#94a3b8" font-size="9" text-anchor="middle">Deno · RPC Layer</text>
+        <text x="900" y="278" fill="#34d399" font-size="7" text-anchor="middle">Stripe webhooks</text>
+
+        <!-- RLS Policies note -->
+        <rect x="650" y="300" width="325" height="50" rx="6" fill="rgba(136,19,55,0.15)" stroke="#fb7185" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="812" y="318" fill="#fb7185" font-size="9" text-anchor="middle">🔒 Row-Level Security</text>
+        <text x="812" y="335" fill="#94a3b8" font-size="8" text-anchor="middle">Admin_Org · Guide · Superadmin roles</text>
+
+        <!-- ====== ARROW: Supabase → Stripe ====== -->
+        <line x1="990" y1="257" x2="1050" y2="257" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-emerald)"/>
+        <text x="1020" y="252" fill="#94a3b8" font-size="8" text-anchor="middle">webhook</text>
+
+        <!-- ====== LAYER 3: STRIPE (External) ====== -->
+        <text x="1140" y="45" fill="#fbbf24" font-size="8" font-weight="600" filter="url(#glow)">EXTERNAL</text>
+
+        <rect x="1050" y="55" width="200" height="340" rx="14" fill="rgba(120,53,15,0.06)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1062" y="73" fill="#fbbf24" font-size="9" font-weight="600">Stripe</text>
+
+        <rect x="1065" y="85" width="170" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1150" y="105" fill="white" font-size="11" font-weight="600" text-anchor="middle">Checkout Sessions</text>
+        <text x="1150" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">Redirect payment</text>
+        <text x="1150" y="133" fill="#fbbf24" font-size="7" text-anchor="middle">ISK + EUR support</text>
+
+        <rect x="1065" y="155" width="170" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1150" y="175" fill="white" font-size="11" font-weight="600" text-anchor="middle">Payment Intents</text>
+        <text x="1150" y="190" fill="#94a3b8" font-size="9" text-anchor="middle">Server-side capture</text>
+        <text x="1150" y="203" fill="#fbbf24" font-size="7" text-anchor="middle">Deposit / Full payment</text>
+
+        <rect x="1065" y="225" width="170" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1150" y="245" fill="white" font-size="11" font-weight="600" text-anchor="middle">Webhooks</text>
+        <text x="1150" y="260" fill="#94a3b8" font-size="9" text-anchor="middle">checkout.session.completed</text>
+        <text x="1150" y="273" fill="#fbbf24" font-size="7" text-anchor="middle">→ Edge Functions</text>
+
+        <rect x="1065" y="295" width="170" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1150" y="315" fill="white" font-size="11" font-weight="600" text-anchor="middle">Connect (future)</text>
+        <text x="1150" y="330" fill="#94a3b8" font-size="9" text-anchor="middle">Post-MVP: payouts</text>
+        <text x="1150" y="343" fill="#fbbf24" font-size="7" text-anchor="middle">Stripe Connect onboarding</text>
+
+        <!-- ====== LAYER 4: FLUTTER APP (bottom) ====== -->
+        <text x="440" y="460" fill="#fb7185" font-size="8" font-weight="600" filter="url(#glow)">FLUTTER MOBILE APP (GUIDE)</text>
+
+        <rect x="210" y="470" width="780" height="130" rx="14" fill="rgba(136,19,55,0.04)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="222" y="488" fill="#fb7185" font-size="9" font-weight="600">Flutter 3.x · iOS + Android</text>
+
+        <rect x="230" y="500" width="140" height="85" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="300" y="520" fill="white" font-size="11" font-weight="600" text-anchor="middle">Check-in/Out</text>
+        <text x="300" y="537" fill="#94a3b8" font-size="9" text-anchor="middle">QR / Manual code</text>
+        <text x="300" y="552" fill="#94a3b8" font-size="9" text-anchor="middle">Real-time status</text>
+        <text x="300" y="567" fill="#fb7185" font-size="7" text-anchor="middle">supabase-realtime</text>
+
+        <rect x="390" y="500" width="140" height="85" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="460" y="520" fill="white" font-size="11" font-weight="600" text-anchor="middle">Booking List</text>
+        <text x="460" y="537" fill="#94a3b8" font-size="9" text-anchor="middle">Today's bookings</text>
+        <text x="460" y="552" fill="#94a3b8" font-size="9" text-anchor="middle">Client details</text>
+        <text x="460" y="567" fill="#fb7185" font-size="7" text-anchor="middle">supabase-js fetch</text>
+
+        <rect x="550" y="500" width="140" height="85" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="620" y="520" fill="white" font-size="11" font-weight="600" text-anchor="middle">Photo Upload</text>
+        <text x="620" y="537" fill="#94a3b8" font-size="9" text-anchor="middle">Check-in evidence</text>
+        <text x="620" y="552" fill="#94a3b8" font-size="9" text-anchor="middle">Damage / condition</text>
+        <text x="620" y="567" fill="#fb7185" font-size="7" text-anchor="middle">Supabase Storage</text>
+
+        <rect x="710" y="500" width="140" height="85" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="780" y="520" fill="white" font-size="11" font-weight="600" text-anchor="middle">Notifications</text>
+        <text x="780" y="537" fill="#94a3b8" font-size="9" text-anchor="middle">New booking alert</text>
+        <text x="780" y="552" fill="#94a3b8" font-size="9" text-anchor="middle">Schedule changes</text>
+        <text x="780" y="567" fill="#fb7185" font-size="7" text-anchor="middle">Realtime push</text>
+
+        <!-- Flutter → Supabase arrows -->
+        <path d="M 300 500 L 300 440 Q 300 420 320 420 L 640 420 Q 660 420 660 400 L 660 365" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+        <text x="480" y="416" fill="#94a3b8" font-size="8" text-anchor="middle">Supabase Dart Client</text>
+
+        <path d="M 460 500 L 460 440 Q 460 430 480 430 L 640 430 Q 660 430 660 390 L 660 365" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+
+        <path d="M 620 500 L 620 440 Q 620 430 640 430 L 730 430 Q 750 430 750 400 L 750 365" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+
+        <!-- ====== DATA FLOW LABELS ====== -->
+        <rect x="630" y="400" width="325" height="55" rx="6" fill="rgba(6,78,59,0.2)" stroke="#34d399" stroke-width="1"/>
+        <text x="792" y="418" fill="#34d399" font-size="9" text-anchor="middle">supabase-dart</text>
+        <text x="792" y="433" fill="#94a3b8" font-size="8" text-anchor="middle">REST + Realtime + Storage</text>
+        <text x="792" y="446" fill="#a78bfa" font-size="8" text-anchor="middle">JWT Auth · RLS enforced</text>
+      </svg>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Frontend Stack</h3>
+        </div>
+        <ul>
+          <li>• Next.js 15 (App Router) + TypeScript</li>
+          <li>• Tailwind CSS v4 + shadcn/ui</li>
+          <li>• supabase-js (client-side RLS)</li>
+          <li>• @stripe/react-stripe-js + Elements</li>
+          <li>• Hosted on Vercel (Edge + Serverless)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot violet"></div>
+          <h3>Backend & Database</h3>
+        </div>
+        <ul>
+          <li>• Supabase Postgres (managed, auto-backup)</li>
+          <li>• Row-Level Security — zero-trust</li>
+          <li>• Supabase Edge Functions (Deno)</li>
+          <li>• Supabase Realtime — WebSocket push</li>
+          <li>• Supabase Auth (GoTrue + JWT)</li>
+          <li>• Supabase Storage (guide photos)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Payments & Mobile</h3>
+        </div>
+        <ul>
+          <li>• Stripe Checkout Sessions (redirect)</li>
+          <li>• Stripe PaymentIntents (server-side)</li>
+          <li>• Stripe Webhooks → Edge Functions</li>
+          <li>• ISK (íslensk króna) support native</li>
+          <li>• Flutter 3.x (iOS + Android)</li>
+          <li>• supabase-dart + riverpod</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">Tindur MVP · March 2027 Target · Iceland Tour Operations · Single Developer</p>
+  </div>
+</body>
+</html>
