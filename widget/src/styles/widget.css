@@ -1,0 +1,36 @@
+.tindur-widget {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --widget-primary: #10b981;
+  --widget-accent: #ec4899;
+}
+
+.tindur-widget[data-theme="dark"] {
+  --widget-bg: #1f2937;
+  --widget-text: #f3f4f6;
+}
+
+.tindur-widget[data-theme="light"] {
+  --widget-bg: #ffffff;
+  --widget-text: #111827;
+}
+
+.widget-container {
+  padding: 20px;
+  background: var(--widget-bg);
+  color: var(--widget-text);
+  border-radius: 8px;
+}
+
+.widget-title {
+  color: var(--widget-primary);
+  margin-bottom: 24px;
+}
+
+.widget-form button:hover {
+  background-color: var(--widget-primary);
+}
+
+.widget-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--widget-primary);
+}
